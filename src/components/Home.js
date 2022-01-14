@@ -1,20 +1,35 @@
 import React from "react";
 
-import { auth } from "../services/firebase";
+import { MyNavbar } from "./Navbar";
+import { MainContent } from "./MainContent";
 
 import "../App.css";
 
+import { db } from "../services/firebase";
+import { ref, onValue } from "firebase/database";
+
+import { useEffect, useState } from "react";
+
 const Home = ({ user }) => {
+  const [movies, setMovies] = useState([]);
+
+  useEffect(() => {
+    onValue(ref(db, "/movies-list/"), (snapshot) => {
+      console.log(snapshot);
+      let allMovies = [];
+      snapshot.forEach((snap) => {
+        allMovies.push(snap.val());
+      });
+
+      setMovies(allMovies);
+      console.log(allMovies);
+    });
+  }, []);
+
   return (
     <div className="home">
-      <h1>
-        Hello, <span></span>
-        {user.displayName}
-      </h1>
-      <img src={user.photoURL} alt="" />
-      <button className="button signout" onClick={() => auth.signOut()}>
-        Sign out
-      </button>
+      <MyNavbar user={user} />
+      <MainContent movies={movies} />
     </div>
   );
 };
