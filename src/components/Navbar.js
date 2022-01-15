@@ -3,6 +3,8 @@ import { Button, Navbar, Container, Nav } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 
+import { Link, NavLink } from "react-router-dom";
+
 export const MyNavbar = ({ user }) => {
   return (
     <Navbar
@@ -13,7 +15,9 @@ export const MyNavbar = ({ user }) => {
       fixed="top"
     >
       <Container>
-        <Navbar.Brand href="#home">Logo</Navbar.Brand>
+        <Navbar.Brand as={NavLink} to="/" exact>
+          Logo
+        </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto"></Nav>
@@ -23,7 +27,7 @@ export const MyNavbar = ({ user }) => {
             </Nav.Link>
           </Nav>
         </Navbar.Collapse>
-        <Button variant="outline-danger">
+        <Button as={NavLink} to="/wishlist" exact variant="outline-danger">
           <FontAwesomeIcon icon={faHeart} />
         </Button>
         <Button variant="danger">Logout</Button>

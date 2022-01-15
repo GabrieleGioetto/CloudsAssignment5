@@ -4,18 +4,18 @@ import { Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 
-import BootstrapTable from "react-bootstrap-table-next";
-import paginationFactory from "react-bootstrap-table2-paginator";
+import { filterMovies } from "./Util";
 import { TableFilter } from "./TableFilter";
 
-import { filterMovies } from "./Util";
+import BootstrapTable from "react-bootstrap-table-next";
+import paginationFactory from "react-bootstrap-table2-paginator";
 
-export const MainContent = ({ movies, moviesWishlist, addToWishlist }) => {
+export const Wishlist = ({ moviesWishlist, removeFromWishlist }) => {
   const [filterCategory, setFilterCategory] = useState("title");
   const [filterText, setFilterText] = useState("");
 
   const actionsFormatter = (cell, row) => (
-    <Button onClick={() => addToWishlist(row)} variant="outline-danger">
+    <Button onClick={() => removeFromWishlist(row)} variant="outline-danger">
       <FontAwesomeIcon icon={faHeart} />
     </Button>
   );
@@ -61,22 +61,18 @@ export const MainContent = ({ movies, moviesWishlist, addToWishlist }) => {
     prePageText: "<",
     showTotal: true,
     alwaysShowAllBtns: true,
-    onPageChange: function (page, sizePerPage) {},
-    onSizePerPageChange: function (page, sizePerPage) {},
+    onPageChange: function (page, sizePerPage) {
+      console.log("page", page);
+      console.log("sizePerPage", sizePerPage);
+    },
+    onSizePerPageChange: function (page, sizePerPage) {
+      console.log("page", page);
+      console.log("sizePerPage", sizePerPage);
+    },
   });
 
-  const getMoviesNotInWishlist = (movies, moviesWishlist) => {
-    const moviesWishlistIds = moviesWishlist.map((movie) => movie.id);
-    const moviesNotInWishlist = movies.filter(
-      (movie) => !moviesWishlistIds.includes(movie.id)
-    );
-
-    return moviesNotInWishlist;
-  };
-
-  const moviesNotInWishlist = getMoviesNotInWishlist(movies, moviesWishlist);
   const filteredMovies = filterMovies(
-    moviesNotInWishlist,
+    moviesWishlist,
     filterCategory,
     filterText
   );
@@ -87,6 +83,7 @@ export const MainContent = ({ movies, moviesWishlist, addToWishlist }) => {
         setFilterText={setFilterText}
         setFilterCategory={setFilterCategory}
       />
+
       <BootstrapTable
         keyField="id"
         data={filteredMovies}
