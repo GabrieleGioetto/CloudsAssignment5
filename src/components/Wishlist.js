@@ -58,7 +58,7 @@ export const Wishlist = ({ moviesWishlist, removeFromWishlist }) => {
 
   const pagination = paginationFactory({
     page: 1,
-    sizePerPage: 10,
+    sizePerPage: 8,
     lastPageText: ">>",
     firstPageText: "<<",
     nextPageText: ">",
