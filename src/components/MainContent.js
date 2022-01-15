@@ -1,6 +1,6 @@
 import "../App.css";
 import { useState } from "react";
-import { Button } from "react-bootstrap";
+import { Button, Spinner } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 
@@ -10,7 +10,12 @@ import { TableFilter } from "./TableFilter";
 
 import { filterMovies } from "./Util";
 
-export const MainContent = ({ movies, moviesWishlist, addToWishlist }) => {
+export const MainContent = ({
+  movies,
+  moviesWishlist,
+  addToWishlist,
+  isLoading,
+}) => {
   const [filterCategory, setFilterCategory] = useState("title");
   const [filterText, setFilterText] = useState("");
 
@@ -38,7 +43,7 @@ export const MainContent = ({ movies, moviesWishlist, addToWishlist }) => {
     },
     {
       dataField: "actions",
-      text: "Actions",
+      text: "Add to wishlist",
       isDummyField: true,
       csvExport: false,
       formatter: actionsFormatter,
@@ -54,7 +59,7 @@ export const MainContent = ({ movies, moviesWishlist, addToWishlist }) => {
 
   const pagination = paginationFactory({
     page: 1,
-    sizePerPage: 10,
+    sizePerPage: 8,
     lastPageText: ">>",
     firstPageText: "<<",
     nextPageText: ">",
@@ -83,17 +88,32 @@ export const MainContent = ({ movies, moviesWishlist, addToWishlist }) => {
 
   return (
     <div className="mainContent">
-      <TableFilter
-        setFilterText={setFilterText}
-        setFilterCategory={setFilterCategory}
-      />
-      <BootstrapTable
-        keyField="id"
-        data={filteredMovies}
-        columns={columns}
-        defaultSorted={defaultSorted}
-        pagination={pagination}
-      ></BootstrapTable>
+      {isLoading ? (
+        <div className="spinner">
+          <h1>Loading movies...</h1>
+          <Spinner
+            style={{ marginLeft: "2em" }}
+            animation="border"
+            role="status"
+          >
+            <span className="visually-hidden">Loading... </span>
+          </Spinner>
+        </div>
+      ) : (
+        <>
+          <TableFilter
+            setFilterText={setFilterText}
+            setFilterCategory={setFilterCategory}
+          />
+          <BootstrapTable
+            keyField="id"
+            data={filteredMovies}
+            columns={columns}
+            defaultSorted={defaultSorted}
+            pagination={pagination}
+          ></BootstrapTable>
+        </>
+      )}
     </div>
   );
 };

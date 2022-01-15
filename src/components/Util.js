@@ -20,3 +20,6 @@ export const filterMovies = (movies, filterCategory, filterText) => {
   }
   return movies;
 };
+
+export const dbName = "movies-list";
+export const dbFirestoreName = "movies-wishlist";

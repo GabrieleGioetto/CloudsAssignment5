@@ -10,16 +10,25 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import { db, dbFirestore } from "../services/firebase";
 import { ref, onValue } from "firebase/database";
-import { collection, getDocs, doc, setDoc } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  doc,
+  setDoc,
+  deleteDoc,
+} from "firebase/firestore";
 
 import { useEffect, useState } from "react";
+import { dbFirestoreName, dbName } from "./Util";
 
 const Home = ({ user }) => {
   const [movies, setMovies] = useState([]);
   const [moviesWishlist, setMoviesWishlist] = useState([]);
 
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
-    onValue(ref(db, "/movies-list/"), (snapshot) => {
+    onValue(ref(db, `/${dbName}/`), (snapshot) => {
       console.log(snapshot);
       let allMovies = [];
       snapshot.forEach((snap) => {
@@ -27,29 +36,44 @@ const Home = ({ user }) => {
       });
 
       setMovies(allMovies);
-      console.log(allMovies);
+      setIsLoading(false);
     });
 
-    getDocs(collection(dbFirestore, "movies-wishlist")).then((snapshot) => {
-      snapshot.forEach((doc) => {
-        console.log(doc.data());
-        let allMoviesWishlist = [];
-        snapshot.forEach((snap) => {
-          allMoviesWishlist.push(snap.val());
-        });
+    getDocs(collection(dbFirestore, `${dbFirestoreName}`)).then((snapshot) => {
+      let allMoviesWishlist = [];
 
-        setMoviesWishlist(allMoviesWishlist);
-        console.log(allMoviesWishlist);
+      snapshot.forEach((doc) => {
+        allMoviesWishlist.push(doc.data());
       });
+      setMoviesWishlist(allMoviesWishlist);
     });
   }, []);
 
   const addToWishlist = (row) => {
+    // dbFirestore
+
+    console.log(row);
     setMoviesWishlist([...moviesWishlist, row]);
+
+    setDoc(doc(dbFirestore, `${dbFirestoreName}`, row.id.toString()), row)
+      .then(() => {
+        console.log("Successful");
+      })
+      .catch((error) => {
+        console.log(`Unsuccessful returned error ${error}`);
+      });
   };
 
   const removeFromWishlist = (row) => {
     setMoviesWishlist(moviesWishlist.filter((movie) => movie.id != row.id));
+
+    deleteDoc(doc(dbFirestore, `${dbFirestoreName}`, row.id.toString()))
+      .then(() => {
+        console.log("Successful");
+      })
+      .catch((error) => {
+        console.log(`Unsuccessful returned error ${error}`);
+      });
   };
 
   return (
@@ -65,6 +89,7 @@ const Home = ({ user }) => {
                 movies={movies}
                 moviesWishlist={moviesWishlist}
                 addToWishlist={addToWishlist}
+                isLoading={isLoading}
               />
             }
           />
