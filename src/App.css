@@ -1,9 +1,3 @@
-.App {
-  text-align: center;
-}
-
-/* ---------------------------------------------------------------------- */
-
 .mainContent {
   margin-top: 3.3em;
   padding: 2em;
@@ -26,6 +20,7 @@
 
 .login {
   margin: auto 0;
+  text-align: center;
 }
 
 .googleLogo {

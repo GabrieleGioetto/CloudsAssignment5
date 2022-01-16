@@ -15,6 +15,13 @@ const Login = () => {
           <Row>
             <Col></Col>
             <Col>
+              <h2>Movies Room</h2>
+            </Col>
+            <Col></Col>
+          </Row>
+          <Row>
+            <Col></Col>
+            <Col>
               <img className="imageLogo" src={logo} alt="Logo" />
             </Col>
             <Col></Col>

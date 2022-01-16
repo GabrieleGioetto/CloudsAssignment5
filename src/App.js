@@ -24,7 +24,7 @@ function App() {
   console.log(user);
 
   return (
-    <div className="app">
+    <div className="App">
       {user ? <Home user={user} /> : <Login user={user} />}
     </div>
   );
