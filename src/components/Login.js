@@ -22,7 +22,6 @@ const Login = () => {
           <Row>
             <Col></Col>
             <Col>
-              {" "}
               <Button
                 className="btnLogin"
                 onClick={signInWithGoogle}
