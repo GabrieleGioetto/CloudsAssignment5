@@ -16,6 +16,8 @@ import {
   doc,
   setDoc,
   deleteDoc,
+  query,
+  where,
 } from "firebase/firestore";
 
 import { useEffect, useState } from "react";
@@ -39,7 +41,12 @@ const Home = ({ user }) => {
       setIsLoading(false);
     });
 
-    getDocs(collection(dbFirestore, `${dbFirestoreName}`)).then((snapshot) => {
+    const q = query(
+      collection(dbFirestore, `${dbFirestoreName}`),
+      where("userEmail", "==", user.email)
+    );
+
+    getDocs(q).then((snapshot) => {
       let allMoviesWishlist = [];
 
       snapshot.forEach((doc) => {
@@ -53,9 +60,18 @@ const Home = ({ user }) => {
     // dbFirestore
 
     console.log(row);
+    row["userEmail"] = user.email;
+
     setMoviesWishlist([...moviesWishlist, row]);
 
-    setDoc(doc(dbFirestore, `${dbFirestoreName}`, row.id.toString()), row)
+    setDoc(
+      doc(
+        dbFirestore,
+        `${dbFirestoreName}`,
+        getDocumentId({ userEmail: user.email, movieId: row.id.toString() })
+      ),
+      row
+    )
       .then(() => {
         console.log("Successful");
       })
@@ -67,7 +83,13 @@ const Home = ({ user }) => {
   const removeFromWishlist = (row) => {
     setMoviesWishlist(moviesWishlist.filter((movie) => movie.id != row.id));
 
-    deleteDoc(doc(dbFirestore, `${dbFirestoreName}`, row.id.toString()))
+    deleteDoc(
+      doc(
+        dbFirestore,
+        `${dbFirestoreName}`,
+        getDocumentId({ userEmail: user.email, movieId: row.id.toString() })
+      )
+    )
       .then(() => {
         console.log("Successful");
       })
@@ -75,6 +97,10 @@ const Home = ({ user }) => {
         console.log(`Unsuccessful returned error ${error}`);
       });
   };
+
+  function getDocumentId({ userEmail, movieId }) {
+    return `${userEmail}_${movieId}`;
+  }
 
   return (
     <Router>
